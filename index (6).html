@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nivox Tweaks — Your PC is bottlenecked by default</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #07070b;
+    --bg-2: #0a0a10;
+    --surface: #0e0e16;
+    --surface-2: #14141f;
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.2);
+    --text: #f1f2f8;
+    --text-dim: #8b8fa3;
+    --text-faint: #55586c;
+    --magenta: #ff1f6d;
+    --violet: #b026ff;
+    --cyan: #00f0ff;
+    --lime: #c6ff3d;
+    --grad: linear-gradient(100deg, var(--magenta) 0%, var(--violet) 55%, var(--cyan) 100%);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection{ background: var(--magenta); color:#fff; }
+  a{ color:inherit; text-decoration:none; }
+  .disp{ font-family:'Chakra Petch', sans-serif; }
+  .mono{ font-family:'JetBrains Mono', ui-monospace, monospace; }
+
+  /* ---------- backdrop ---------- */
+  .bg-field{ position:fixed; inset:0; z-index:-2; background: var(--bg); }
+  .bg-glow{
+    position:fixed; inset:0; z-index:-2;
+    background:
+      radial-gradient(900px 560px at 82% -8%, rgba(176,38,255,0.22), transparent 60%),
+      radial-gradient(760px 520px at 4% 20%, rgba(255,31,109,0.16), transparent 55%),
+      radial-gradient(600px 400px at 50% 120%, rgba(0,240,255,0.10), transparent 60%);
+  }
+  .bg-scan{
+    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.5;
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+  .bg-grid{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(1100px 650px at 68% 6%, #000 8%, transparent 68%);
+  }
+
+  .wrap{ max-width: 1220px; margin:0 auto; padding: 0 32px; }
+
+  /* ---------- corner bracket frame ---------- */
+  .bracket{ position:relative; }
+  .bracket::before, .bracket::after{
+    content:""; position:absolute; width:22px; height:22px; pointer-events:none; z-index:2;
+  }
+  .bracket::before{ top:-1px; left:-1px; border-top:2px solid var(--cyan); border-left:2px solid var(--cyan); }
+  .bracket::after{ bottom:-1px; right:-1px; border-bottom:2px solid var(--magenta); border-right:2px solid var(--magenta); }
+
+  /* ---------- nav ---------- */
+  header{
+    position: sticky; top:0; z-index:50;
+    background: rgba(7,7,11,0.75); backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--border);
+  }
+  nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1220px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{ width:28px; height:28px; background: var(--grad); clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 100%, 0 100%); position:relative; }
+  .brand-mark::after{ content:""; position:absolute; inset:5px; background: var(--bg); clip-path: polygon(0 0, 100% 0, 100% 55%, 55% 100%, 0 100%); }
+  .brand-name{ font-family:'Chakra Petch'; font-weight:700; font-size:17px; letter-spacing:0.5px; }
+  .brand-sub{ font-size:9.5px; color: var(--text-faint); letter-spacing:3px; margin-top:-2px; }
+
+  .nav-links{ display:flex; gap:32px; }
+  .nav-links a{ font-size:13.5px; color:var(--text-dim); font-family:'Chakra Petch'; font-weight:500; letter-spacing:0.3px; transition:color .15s; }
+  .nav-links a:hover{ color: var(--cyan); }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px 24px; font-family:'Chakra Petch'; font-weight:600; font-size:14px; letter-spacing:0.4px;
+    border:1px solid transparent; cursor:pointer; transition: transform .15s, box-shadow .2s, filter .2s;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .btn-primary{ background: var(--grad); color:#fff; box-shadow: 0 8px 26px -8px rgba(176,38,255,0.55); }
+  .btn-primary:hover{ transform: translateY(-1px); filter: brightness(1.12); }
+  .btn-ghost{ background: rgba(255,255,255,0.03); color:var(--text); border-color: var(--border-strong); }
+  .btn-ghost:hover{ background: rgba(0,240,255,0.06); border-color: var(--cyan); color: var(--cyan); }
+  .btn-sm{ padding:9px 18px; font-size:13px; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: 84px 0 0; }
+  .hero-grid{ display:grid; grid-template-columns: 1.05fr 0.95fr; gap:54px; align-items:center; }
+  .kicker{
+    display:inline-flex; align-items:center; gap:9px; font-family:'JetBrains Mono'; font-size:12px; color:var(--lime);
+    padding:6px 12px; border:1px solid rgba(198,255,61,0.35); background: rgba(198,255,61,0.06);
+    margin-bottom:24px; clip-path: polygon(8px 0,100% 0,100% 100%,0 100%,0 8px);
+  }
+  .kicker .dot{ width:6px; height:6px; background: var(--lime); box-shadow:0 0 8px var(--lime); }
+
+  h1{
+    font-family:'Chakra Petch'; font-size: clamp(36px, 4.6vw, 58px); line-height: 1.03;
+    font-weight:700; letter-spacing:-0.5px; margin: 0 0 20px; text-transform: uppercase;
+  }
+  h1 .grad{ background: var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  #glitchWord{ position:relative; display:inline-block; }
+
+  .hero p.lead{ font-size:17.5px; line-height:1.65; color:var(--text-dim); max-width: 470px; margin: 0 0 32px; }
+  .hero-cta{ display:flex; gap:14px; margin-bottom:38px; flex-wrap:wrap; }
+
+  .hero-meta{ display:flex; gap:28px; }
+  .hero-meta div{ display:flex; flex-direction:column; }
+  .hero-meta .n{ font-family:'JetBrains Mono'; font-size:19px; font-weight:700; color: var(--cyan); }
+  .hero-meta .l{ font-size:11.5px; color:var(--text-faint); margin-top:3px; font-family:'Chakra Petch'; letter-spacing:0.3px; }
+
+  /* dial panel */
+  .panel{ background: linear-gradient(180deg, var(--surface), var(--surface-2)); border:1px solid var(--border); }
+  .dial-card{ padding:28px; position:relative; overflow:hidden; }
+  .dial-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
+  .dial-top .label{ font-family:'Chakra Petch'; font-size:12px; letter-spacing:1.5px; color:var(--text-faint); text-transform:uppercase; }
+  .dial-top .live{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--lime); font-family:'JetBrains Mono'; }
+  .dial-top .live .p{ width:6px; height:6px; background:var(--lime); animation: pulse 1.6s infinite; }
+
+  .dial-wrap{ display:flex; justify-content:center; padding:16px 0 4px; position:relative; }
+  .dial-num{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+  .dial-num .v{ font-family:'JetBrains Mono'; font-size:44px; font-weight:700; line-height:1; }
+  .dial-num .u{ font-size:11px; color:var(--text-faint); margin-top:5px; letter-spacing:1.5px; font-family:'Chakra Petch'; }
+
+  .dial-caption{ text-align:center; font-size:12.5px; color:var(--text-dim); margin-top:2px; font-family:'JetBrains Mono'; }
+  .dial-caption b{ color: var(--lime); font-weight:700; }
+
+  .chip-row{ display:flex; gap:10px; margin-top:20px; }
+  .chip{ flex:1; background: rgba(255,255,255,0.02); border:1px solid var(--border); padding:11px 12px; }
+  .chip .chead{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-faint); margin-bottom:7px; font-family:'Chakra Petch'; letter-spacing:0.4px; text-transform:uppercase;}
+  .chip .cval{ font-family:'JetBrains Mono'; font-size:14.5px; font-weight:700; margin-bottom:7px; }
+  .bar{ height:3px; background: rgba(255,255,255,0.07); overflow:hidden; }
+  .bar i{ display:block; height:100%; background: linear-gradient(90deg, var(--violet), var(--cyan)); }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+  /* ---------- ticker ---------- */
+  .ticker{ border-top:1px solid var(--border); border-bottom:1px solid var(--border); background: var(--bg-2); overflow:hidden; margin-top: 76px; }
+  .ticker-track{ display:flex; gap:0; width: max-content; animation: scroll 32s linear infinite; }
+  .ticker-item{ display:flex; align-items:center; gap:10px; padding: 16px 34px; font-family:'JetBrains Mono'; font-size:13px; white-space:nowrap; border-right:1px solid var(--border); }
+  .ticker-item b{ color: var(--lime); font-weight:700; }
+  .ticker-item .sep{ color: var(--text-faint); }
+  @keyframes scroll{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce){ .ticker-track{ animation: none; } }
+
+  /* ---------- sections ---------- */
+  section{ padding: 96px 0; }
+  .section-head{ max-width: 640px; margin-bottom:54px; }
+  .eyebrow-line{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .eyebrow-line .tick{ width:26px; height:2px; background: var(--grad); }
+  .eyebrow-line span{ font-family:'JetBrains Mono'; font-size:12.5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;}
+  .section-head h2{ font-family:'Chakra Petch'; font-size: clamp(27px,3.1vw,37px); font-weight:700; letter-spacing:-0.3px; margin:0 0 14px; text-transform: uppercase; line-height:1.15; }
+  .section-head p{ font-size:15.5px; color:var(--text-dim); line-height:1.65; margin:0; }
+
+  /* feature bento — angular */
+  .bento{ display:grid; grid-template-columns: repeat(6,1fr); gap:2px; background: var(--border); border:1px solid var(--border); }
+  .bento .card{ background: var(--surface); padding:30px; transition: background .2s; position:relative; border-left: 3px solid transparent; }
+  .bento .card:hover{ background: var(--surface-2); }
+  .f-big{ grid-column: span 3; grid-row: span 2; padding:36px; display:flex; flex-direction:column; justify-content:space-between; border-left-color: var(--magenta); }
+  .f-reg{ grid-column: span 3; border-left-color: var(--cyan); }
+  .f-small{ grid-column: span 2; border-left-color: var(--violet); }
+  .f-small:nth-of-type(3){ border-left-color: var(--lime); }
+
+  .f-tag{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-faint); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px; }
+  .card h3{ font-family:'Chakra Petch'; font-size:18px; font-weight:700; margin:0 0 10px; text-transform: uppercase; letter-spacing: 0.2px;}
+  .f-big h3{ font-size:23px; }
+  .card p{ font-size:14px; color:var(--text-dim); line-height:1.65; margin:0; }
+  .f-big-visual{ margin-top:20px; padding-top:18px; border-top:1px solid var(--border); font-family:'JetBrains Mono'; font-size:12.5px; color:var(--text-faint); }
+  .f-big-visual b{ color: var(--lime); font-weight:700; }
+
+  /* ---------- terminal ---------- */
+  .terminal-section{ background: var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .terminal{ background:#050508; border:1px solid var(--border-strong); position:relative; }
+  .term-bar{ display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .term-bar i{ width:9px; height:9px; }
+  .term-bar .r1{ background:#ff1f6d; } .term-bar .r2{ background:#ffb020; } .term-bar .r3{ background:#c6ff3d; }
+  .term-bar span{ margin-left:10px; font-size:11.5px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+  .term-body{ padding:22px 24px; font-family:'JetBrains Mono'; font-size:13px; line-height:2; min-height: 270px; }
+  .term-body .ok{ color: var(--lime); }
+  .term-body .dim{ color: var(--text-faint); }
+  .term-body .hl{ color: var(--cyan); }
+  .cursor{ display:inline-block; width:7px; height:13px; background: var(--magenta); vertical-align:-2px; animation: pulse 1s infinite; }
+
+  /* ---------- benchmark compare ---------- */
+  .compare{ display:grid; grid-template-columns:1fr 1fr; gap:2px; background: var(--border); border:1px solid var(--border); }
+  .cmp-card{ background: var(--surface); padding:32px; }
+  .cmp-card.after{ background: linear-gradient(180deg, rgba(198,255,61,0.05), var(--surface) 45%); }
+  .cmp-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px; }
+  .cmp-head span{ font-family:'Chakra Petch'; font-size:12.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:1px; }
+  .cmp-score{ font-family:'JetBrains Mono'; font-size:38px; font-weight:700; }
+  .cmp-row{ display:flex; justify-content:space-between; padding:11px 0; border-top:1px solid var(--border); font-size:13.5px; }
+  .cmp-row:first-of-type{ border-top:none; }
+  .cmp-row .v{ font-family:'JetBrains Mono'; color:var(--text-dim); }
+  .after .cmp-row .v{ color: var(--lime); font-weight:600; }
+
+  /* ---------- CTA ---------- */
+  .cta-panel{
+    padding: 66px 54px; text-align:center; position:relative; overflow:hidden;
+    background: radial-gradient(760px 320px at 50% -25%, rgba(255,31,109,0.18), transparent 60%), linear-gradient(180deg, var(--surface), var(--surface-2));
+    border:1px solid var(--border);
+  }
+  .cta-panel h2{ font-family:'Chakra Petch'; font-size: clamp(27px,3.3vw,39px); margin:0 0 14px; font-weight:700; text-transform:uppercase; letter-spacing:-0.3px; }
+  .cta-panel p{ color:var(--text-dim); font-size:15.5px; margin:0 0 32px; }
+  .cta-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .req{ margin-top:28px; font-size:12px; color:var(--text-faint); }
+
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--border); padding:40px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+  .foot-links{ display:flex; gap:24px; }
+  .foot-links a{ font-family:'Chakra Petch'; font-size:13px; color:var(--text-dim); }
+  .foot-links a:hover{ color: var(--cyan); }
+  .foot-copy{ font-size:12px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    .bento{ grid-template-columns:1fr 1fr; }
+    .f-big{ grid-column:span 2; }
+    .f-reg{ grid-column:span 2; }
+    .f-small{ grid-column:span 2; }
+    .compare{ grid-template-columns:1fr; }
+    .cta-panel{ padding:44px 22px; }
+    .hero{ padding-top:56px; }
+  }
+  @media (max-width: 520px){
+    .wrap{ padding:0 20px; }
+    .hero-meta{ gap:18px; flex-wrap:wrap; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="bg-field"></div>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+<div class="bg-scan"></div>
+
+<header>
+  <nav>
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div><div class="brand-name">NIVOX</div><div class="brand-sub">TWEAKS</div></div>
+    </div>
+    <div class="nav-links">
+      <a href="#features">ARSENAL</a>
+      <a href="#compare">BENCHMARK</a>
+      <a href="#console">CONSOLE</a>
+      <a href="#download">DOWNLOAD</a>
+    </div>
+    <a href="#download" class="btn btn-primary btn-sm">Get Nivox</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker"><span class="dot"></span>READ LIVE FROM YOUR HARDWARE — NO SIMULATED NUMBERS</div>
+        <h1>Your PC is <span class="grad" id="glitchWord">bottlenecked</span><br>by default Windows.</h1>
+        <p class="lead">Stock Windows throttles your frames before your GPU even gets a say — background bloat, bad DNS, a "Game Mode" that barely does anything. Nivox rips that out in one pass.</p>
+        <div class="hero-cta">
+          <a href="#download" class="btn btn-primary">Unlock your PC — free</a>
+          <a href="#console" class="btn btn-ghost">Watch it run</a>
+        </div>
+        <div class="hero-meta">
+          <div><span class="n">2.1M+</span><span class="l">TWEAKS APPLIED</span></div>
+          <div><span class="n">+38%</span><span class="l">AVG FPS GAIN*</span></div>
+          <div><span class="n">0</span><span class="l">TELEMETRY SENT</span></div>
+        </div>
+      </div>
+
+      <div class="panel dial-card bracket">
+        <div class="dial-top">
+          <span class="label">Performance Score</span>
+          <span class="live"><span class="p"></span>LIVE</span>
+        </div>
+        <div class="dial-wrap">
+          <svg width="230" height="230" viewBox="0 0 240 240">
+            <circle cx="120" cy="120" r="102" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="13"/>
+            <circle id="dialArc" cx="120" cy="120" r="102" fill="none" stroke="url(#dialGrad)" stroke-width="13"
+              stroke-linecap="butt" stroke-dasharray="641" stroke-dashoffset="641" transform="rotate(-90 120 120)"/>
+            <defs>
+              <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff1f6d"/>
+                <stop offset="55%" stop-color="#b026ff"/>
+                <stop offset="100%" stop-color="#00f0ff"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="dial-num"><div class="v" id="scoreVal">40</div><div class="u">/ 100</div></div>
+        </div>
+        <div class="dial-caption">Single tweak pass — <b>+58 pts</b> · <b>+61 avg FPS</b></div>
+
+        <div class="chip-row">
+          <div class="chip"><div class="chead"><span>CPU</span><span>5800X</span></div><div class="cval" id="cpuVal">54%</div><div class="bar"><i id="cpuBar" style="width:54%"></i></div></div>
+          <div class="chip"><div class="chead"><span>RAM</span><span>16GB</span></div><div class="cval" id="ramVal">84%</div><div class="bar"><i id="ramBar" style="width:84%"></i></div></div>
+          <div class="chip"><div class="chead"><span>DISK C</span><span>930GB</span></div><div class="cval" id="diskVal">58%</div><div class="bar"><i id="diskBar" style="width:58%"></i></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-line"><span class="tick"></span><span>The arsenal</span></div>
+        <h2>Real settings. Not placebo sliders.</h2>
+        <p>Every tweak hits a specific registry key, service or policy Microsoft buries three menus deep — and every one has a one-click revert if it doesn't feel right.</p>
+      </div>
+
+      <div class="bento">
+        <div class="card f-big">
+          <div>
+            <div class="f-tag">// input & frames</div>
+            <h3>Game Mode that's actually on</h3>
+            <p>Most "boosters" just nudge a thread priority. Nivox flips the real GameDVR policy so Windows Update and search indexing stop stealing cycles mid-match.</p>
+          </div>
+          <div class="f-big-visual">GameDVR.AllowAutoGameMode <b>→ 1</b><span class="cursor"></span></div>
+        </div>
+
+        <div class="card f-reg">
+          <div class="f-tag">// network</div>
+          <h3>Ping-tested DNS switch</h3>
+          <p>Benchmarks real resolvers against your ISP, not a static list, and locks in whichever one actually shaves ms off your matchmaking. DHCP restores on revert.</p>
+        </div>
+
+        <div class="card f-small">
+          <div class="f-tag">// storage</div>
+          <h3>Junk cleaner</h3>
+          <p>Shader caches, temp files, Discord and browser leftovers — previewed before anything's deleted.</p>
+        </div>
+
+        <div class="card f-small">
+          <div class="f-tag">// safety</div>
+          <h3>One-click restore</h3>
+          <p>Every change is logged before it's applied. Undo one tweak or the whole session.</p>
+        </div>
+
+        <div class="card f-reg">
+          <div class="f-tag">// monitoring</div>
+          <h3>Live hardware read-out</h3>
+          <p>CPU, GPU, RAM and disk pulled straight from WMI. If the dashboard shows a number, your hardware is actually reporting it right now.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="console" class="terminal-section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-line"><span class="tick"></span><span>Under the hood</span></div>
+        <h2>Nothing hidden. Watch the pass run.</h2>
+        <p>Pop the console open during a tweak pass and see exactly which key got touched — no black-box "AI optimization" nonsense.</p>
+      </div>
+      <div class="terminal bracket">
+        <div class="term-bar"><i class="r1"></i><i class="r2"></i><i class="r3"></i><span>nivox-tweaks — apply-session.log</span></div>
+        <div class="term-body" id="termBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow-line"><span class="tick"></span><span>Benchmark</span></div>
+        <h2>One pass, measured on stream</h2>
+        <p>Same PC from the panel above — Ryzen 7 5800X, RTX 5060, stock Windows 11 install, no overclock.</p>
+      </div>
+      <div class="compare">
+        <div class="cmp-card">
+          <div class="cmp-head"><span>Before</span><div class="cmp-score">40</div></div>
+          <div class="cmp-row"><span>Avg FPS (Warzone, 1440p)</span><span class="v">101</span></div>
+          <div class="cmp-row"><span>1% low FPS</span><span class="v">62</span></div>
+          <div class="cmp-row"><span>Ping to EU server</span><span class="v">34ms</span></div>
+          <div class="cmp-row"><span>Boot to desktop</span><span class="v">38s</span></div>
+        </div>
+        <div class="cmp-card after">
+          <div class="cmp-head"><span>After Nivox</span><div class="cmp-score">98</div></div>
+          <div class="cmp-row"><span>Avg FPS (Warzone, 1440p)</span><span class="v">162</span></div>
+          <div class="cmp-row"><span>1% low FPS</span><span class="v">124</span></div>
+          <div class="cmp-row"><span>Ping to EU server</span><span class="v">11ms</span></div>
+          <div class="cmp-row"><span>Boot to desktop</span><span class="v">21s</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <div class="cta-panel bracket">
+        <h2>Stop playing on default settings.</h2>
+        <p>Your PC can already do this. Nivox just flips the switches Windows hides from you. Free, portable, no wizard.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary">Download for Windows 11</a>
+          <a href="#" class="btn btn-ghost">Download for Windows 10</a>
+        </div>
+        <div class="req mono">v1.2.0 · 8.4MB · Win10 20H2+ / Win11 · no account, no telemetry</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand">
+      <div class="brand-mark" style="width:20px;height:20px;"></div>
+      <span class="disp" style="font-weight:600;font-size:13.5px;">NIVOX TWEAKS</span>
+    </div>
+    <div class="foot-links">
+      <a href="#features">Arsenal</a>
+      <a href="#console">Console</a>
+      <a href="#download">Download</a>
+      <a href="#">Changelog</a>
+    </div>
+    <div class="foot-copy">© 2026 NIVOX · NOT AFFILIATED WITH MICROSOFT · *MEASURED ON REFERENCE PC, RESULTS VARY</div>
+  </div>
+</footer>
+
+<script>
+  // hero dial + score count-up
+  (function(){
+    var arc = document.getElementById('dialArc');
+    var scoreEl = document.getElementById('scoreVal');
+    var circumference = 641, target = 98, duration = 1500, start = null;
+    function ease(t){ return 1 - Math.pow(1-t, 3); }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/duration, 1), e = ease(p);
+      var val = Math.round(40 + (target-40)*e);
+      scoreEl.textContent = val;
+      arc.style.strokeDashoffset = circumference - (circumference*(val/100));
+      if(p<1) requestAnimationFrame(step);
+    }
+    setTimeout(function(){ requestAnimationFrame(step); }, 450);
+
+    var stats = [
+      {val:'cpuVal', bar:'cpuBar', from:54, to:11, suf:'%'},
+      {val:'ramVal', bar:'ramBar', from:84, to:37, suf:'%'},
+      {val:'diskVal', bar:'diskBar', from:58, to:52, suf:'%'}
+    ];
+    setTimeout(function(){
+      stats.forEach(function(s){
+        var st=null;
+        function loop(ts){
+          if(!st) st=ts;
+          var p=Math.min((ts-st)/1300,1), e=ease(p);
+          var v=Math.round(s.from+(s.to-s.from)*e);
+          document.getElementById(s.val).textContent = v+s.suf;
+          document.getElementById(s.bar).style.width = v+'%';
+          if(p<1) requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      });
+    }, 850);
+  })();
+
+  // one-shot glitch flicker on the hero headline
+  (function(){
+    var el = document.getElementById('glitchWord');
+    var frames = [
+      {t:200, tx:'2px', op:0.85},
+      {t:80, tx:'-2px', op:1},
+      {t:60, tx:'1px', op:0.9},
+      {t:40, tx:'0px', op:1}
+    ];
+    setTimeout(function fire(){
+      var i=0;
+      function next(){
+        if(i>=frames.length) return;
+        var f=frames[i];
+        el.style.textShadow = '2px 0 #00f0ff, -2px 0 #ff1f6d';
+        el.style.transform = 'translateX('+f.tx+')';
+        el.style.opacity = f.op;
+        setTimeout(function(){
+          el.style.textShadow='none'; el.style.transform='none'; el.style.opacity=1;
+          i++; if(i<frames.length) setTimeout(next, 90);
+        }, f.t);
+      }
+      next();
+    }, 700);
+  })();
+
+  // ticker content
+  (function(){
+    var items = ['+61 AVG FPS','-23ms PING','0% BLOAT','128 TWEAKS LOGGED','+38% 1% LOWS','17s FASTER BOOT','2.1GB CACHE CLEARED','0 TELEMETRY'];
+    var track = document.getElementById('tickerTrack');
+    var html = '';
+    for(var r=0;r<2;r++){
+      items.forEach(function(it){
+        html += '<div class="ticker-item"><b>'+it+'</b></div>';
+      });
+    }
+    track.innerHTML = html;
+  })();
+
+  // terminal typing log
+  (function(){
+    var lines = [
+      {t:'dim', text:'$ nivox-tweaks apply --profile gaming'},
+      {t:'', text:'Scanning system via WMI...'},
+      {t:'ok', text:'✓ CPU: AMD Ryzen 7 5800X (8C/16T) detected'},
+      {t:'ok', text:'✓ GPU: NVIDIA GeForce RTX 5060 detected'},
+      {t:'', text:''},
+      {t:'hl', text:'[1/5] HKLM\\...\\GameBar : AllowAutoGameMode → 1'},
+      {t:'hl', text:'[2/5] Network adapter DNS → benchmarked → 1.1.1.1 (9ms)'},
+      {t:'hl', text:'[3/5] Startup: disabling 6 non-essential entries'},
+      {t:'hl', text:'[4/5] Clearing shader cache + temp (2.1GB freed)'},
+      {t:'hl', text:'[5/5] Power plan → High performance'},
+      {t:'', text:''},
+      {t:'ok', text:'✓ 5 tweaks applied · restore point saved'},
+      {t:'dim', text:'Performance score: 40 → 98 · est. +61 avg FPS'}
+    ];
+    var body = document.getElementById('termBody');
+    var played = false;
+    function typeLine(i){
+      if(i>=lines.length) return;
+      var l = lines[i];
+      var div = document.createElement('div');
+      div.className = l.t;
+      body.appendChild(div);
+      var chars = l.text.split(''); var idx=0;
+      var speed = l.text.length>40 ? 7 : 15;
+      function typeChar(){
+        if(idx<chars.length){ div.textContent += chars[idx]; idx++; setTimeout(typeChar, speed); }
+        else { setTimeout(function(){ typeLine(i+1); }, l.text==='' ? 50 : 130); }
+      }
+      typeChar();
+    }
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting && !played){ played = true; typeLine(0); }
+      });
+    }, {threshold:0.3});
+    obs.observe(document.getElementById('console'));
+  })();
+</script>
+
+</body>
+</html>
