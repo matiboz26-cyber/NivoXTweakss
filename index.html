@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nivox Tweaks — 35 real Windows tweaks, every one reversible</title>
-<meta name="description" content="A portable Windows optimization tool. 35 documented registry, service and power tweaks — every change backed up before it is made, and restorable with one key.">
+<title>Nivox Tweaks — 50 real Windows tweaks, every one reversible</title>
+<meta name="description" content="A portable Windows optimization tool. 50 documented registry, service and power tweaks — every change backed up before it is made, and restorable with one key.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -180,6 +180,11 @@
   .badge-soon{ display:inline-flex; align-items:center; gap:7px; font-family:var(--font-m); font-size:10.5px; letter-spacing:1.2px;
     text-transform:uppercase; color:var(--violet); border:1px solid rgba(176,38,255,.42); background:rgba(176,38,255,.08); padding:5px 11px; margin-bottom:14px; }
   .req{ margin-top:18px; font-family:var(--font-m); font-size:11.5px; color:var(--faint); }
+  .smartscreen-note{ display:flex; gap:10px; align-items:flex-start; margin-top:20px; padding:13px 15px;
+    background:rgba(0,240,255,.05); border:1px solid rgba(0,240,255,.25); font-size:13px; color:var(--dim); line-height:1.55; }
+  .smartscreen-note svg{ flex:none; color:var(--cyan); margin-top:1px; }
+  .smartscreen-note b{ color:var(--text); }
+  .smartscreen-note code{ font-family:var(--font-m); font-size:12px; color:var(--lime); }
 
   /* faq */
   .faq{ border:1px solid var(--border); background:var(--surface); }
@@ -256,13 +261,13 @@
     <div class="wrap hero-grid">
       <div>
         <div class="kicker"><span class="dot"></span>EVERY CHANGE BACKED UP BEFORE IT IS MADE</div>
-        <h1>35 real Windows tweaks.<br><span class="grad">Every one reversible.</span></h1>
+        <h1>50 real Windows tweaks.<br><span class="grad">Every one reversible.</span></h1>
         <p class="lead">Most "boosters" are a progress bar and a placebo. Nivox writes documented registry keys, service start types and power settings — tells you exactly which ones — and stores your original values first, so any change is one keypress away from being undone.</p>
         <div class="hero-cta">
-          <a href="https://github.com/matiboz26-cyber/nivoxtweaks/releases/download/v1.0.0/NivoxTweaks-Setup.exe" class="btn btn-primary btn-lg">Download the free version</a>
+          <a href="https://github.com/matiboz26-cyber/nivoxtweaks/releases/download/v1.1.0/NivoxTweaks-Setup.exe" class="btn btn-primary btn-lg">Download the free version</a>
           <a href="#tweaks" class="btn btn-ghost btn-lg">See every tweak</a>
         </div>
-        <div class="hero-note">Portable · single .exe · no account · no telemetry · Windows 10/11 x64</div>
+        <div class="hero-note">Portable · single .exe · no account · no telemetry · Windows 10/11 x64 · SmartScreen warning on first run is normal, not code-signed yet</div>
       </div>
 
       <div class="terminal bracket">
@@ -275,7 +280,7 @@
   <div class="stats">
     <div class="wrap">
       <div class="stats-in">
-        <div class="stat"><div class="n">35</div><div class="l">Documented tweaks</div></div>
+        <div class="stat"><div class="n">50</div><div class="l">Documented tweaks</div></div>
         <div class="stat"><div class="n">6</div><div class="l">Categories</div></div>
         <div class="stat"><div class="n">100%</div><div class="l">Backed up before change</div></div>
         <div class="stat"><div class="n">0</div><div class="l">Telemetry / accounts</div></div>
@@ -308,6 +313,9 @@
           <div class="tweak"><div class="tn">Remove Menu Show Delay <span class="tag tag-rec">rec</span></div><div class="td">MenuShowDelay from the stock 400 ms down to 0 ms.</div></div>
           <div class="tweak"><div class="tn">Disable Transparency Effects</div><div class="td">Turns off the acrylic blur on taskbar and Start, which saves GPU work.</div></div>
           <div class="tweak"><div class="tn">Remove Startup App Delay <span class="tag tag-rec">rec</span></div><div class="td">Drops the artificial wait Windows adds before launching startup apps.</div></div>
+          <div class="tweak"><div class="tn">Disable Background Apps <span class="tag tag-admin">admin</span></div><div class="td">Stops Store apps running and updating in the background when you're not using them.</div></div>
+          <div class="tweak"><div class="tn">Increase Icon Cache Size</div><div class="td">Raises the cached icon limit so folders and the taskbar stop re-drawing icons from disk.</div></div>
+          <div class="tweak"><div class="tn">Foreground App Priority Boost <span class="tag tag-admin">admin</span> <span class="tag tag-rec">rec</span> <span class="tag tag-boot">reboot</span></div><div class="td">Gives the app you're using right now a bigger CPU time slice over background processes.</div></div>
           <div class="tweak"><div class="tn">Clean Temporary Files</div><div class="td">Clears the user temp folder, plus C:\Windows\Temp when elevated. Files in use are skipped, never forced.</div></div>
         </div>
       </div>
@@ -321,6 +329,7 @@
           <div class="tweak"><div class="tn">System Responsiveness <span class="tag tag-admin">admin</span> <span class="tag tag-boot">reboot</span></div><div class="td">SystemResponsiveness from 20 to 10, leaving more headroom for the foreground app.</div></div>
           <div class="tweak"><div class="tn">Hardware GPU Scheduling <span class="tag tag-admin">admin</span> <span class="tag tag-boot">reboot</span></div><div class="td">Enables HAGS. Needs a supported GPU and a current driver — the app tells you if it did not stick.</div></div>
           <div class="tweak"><div class="tn">Disable Mouse Acceleration <span class="tag tag-rec">rec</span></div><div class="td">Turns off "enhance pointer precision" for a 1:1 relationship between hand and cursor.</div></div>
+          <div class="tweak"><div class="tn">True Fullscreen Exclusive Mode</div><div class="td">Lets games opt out of Fullscreen Optimizations. Can cut input latency and fix alt-tab/brightness quirks in some titles.</div></div>
           <div class="tweak"><div class="tn">Clear GPU Shader Caches</div><div class="td">Wipes DirectX, NVIDIA, AMD, Intel and Steam shader caches. Fixes stutter from stale caches; they rebuild themselves.</div></div>
         </div>
       </div>
@@ -333,6 +342,8 @@
           <div class="tweak"><div class="tn">Disable Nagle's Algorithm <span class="tag tag-admin">admin</span> <span class="tag tag-boot">reboot</span></div><div class="td">TcpAckFrequency and TCPNoDelay on the active adapter, for lower small-packet latency.</div></div>
           <div class="tweak"><div class="tn">DNS: Cloudflare <span class="tag tag-admin">admin</span></div><div class="td">Pins 1.1.1.1 / 1.0.0.1 directly if you already know what you want.</div></div>
           <div class="tweak"><div class="tn">DNS: Google <span class="tag tag-admin">admin</span></div><div class="td">Pins 8.8.8.8 / 8.8.4.4. Restore puts DHCP back exactly as it was.</div></div>
+          <div class="tweak"><div class="tn">Remove Reserved Bandwidth Limit <span class="tag tag-admin">admin</span></div><div class="td">QoS reserved-bandwidth limit to 0%. Only matters if something actually requests a QoS reservation — rare today, so treat it as a minor extra, not a guaranteed win.</div></div>
+          <div class="tweak"><div class="tn">Fix TCP Auto-Tuning <span class="tag tag-admin">admin</span></div><div class="td">Puts the receive-window auto-tuning level back to "normal" if a VPN client or another tool quietly left it disabled, capping throughput.</div></div>
           <div class="tweak"><div class="tn">Flush DNS Cache</div><div class="td">Clears the resolver cache when name resolution goes stale.</div></div>
         </div>
       </div>
@@ -345,6 +356,9 @@
           <div class="tweak"><div class="tn">Don't Reopen Apps After Sign-In</div><div class="td">Stops Windows relaunching everything that was open before shutdown.</div></div>
           <div class="tweak"><div class="tn">Disable SysMain <span class="tag tag-admin">admin</span></div><div class="td">Fine on an SSD. On a mechanical drive it can make app launches slower — the app says so before you apply it.</div></div>
           <div class="tweak"><div class="tn">Disable Search Indexing <span class="tag tag-admin">admin</span></div><div class="td">Saves constant disk I/O, at the cost of slower Start menu and Explorer search.</div></div>
+          <div class="tweak"><div class="tn">Restore Classic Right-Click Menu</div><div class="td">Brings back the full Windows 10-style context menu instead of the trimmed "Show more options" list. No admin needed — Explorer restarts itself automatically.</div></div>
+          <div class="tweak"><div class="tn">Align Taskbar Icons Left</div><div class="td">Moves the Windows 11 taskbar icons back to the left edge instead of centered.</div></div>
+          <div class="tweak"><div class="tn">Disable OneDrive Sync Client <span class="tag tag-admin">admin</span></div><div class="td">Turns off OneDrive machine-wide via the same policy IT admins use. Reversible if you actually use it to back up files.</div></div>
         </div>
       </div>
 
@@ -357,6 +371,9 @@
           <div class="tweak"><div class="tn">Disable Suggested Content <span class="tag tag-rec">rec</span></div><div class="td">No more suggested apps and tips appearing in Start and Settings.</div></div>
           <div class="tweak"><div class="tn">Disable Activity History <span class="tag tag-admin">admin</span></div><div class="td">Stops collection and upload of Timeline activity.</div></div>
           <div class="tweak"><div class="tn">Disable DiagTrack Service <span class="tag tag-admin">admin</span></div><div class="td">Sets the Connected User Experiences telemetry service to Disabled, with its original start type saved.</div></div>
+          <div class="tweak"><div class="tn">Disable Location Tracking <span class="tag tag-admin">admin</span></div><div class="td">Denies apps access to your location at the system level, overriding the per-app toggle.</div></div>
+          <div class="tweak"><div class="tn">Disable Feedback Notifications</div><div class="td">Stops Windows periodically asking "How is this feature working for you?"</div></div>
+          <div class="tweak"><div class="tn">Stop Websites Reading Your Language List</div><div class="td">Opts out of sharing your Windows language list with sites for content personalisation.</div></div>
         </div>
       </div>
 
@@ -368,6 +385,9 @@
           <div class="tweak"><div class="tn">Disable CPU Power Throttling <span class="tag tag-admin">admin</span> <span class="tag tag-boot">reboot</span></div><div class="td">Background processes stop being clocked down. Not for laptops on battery.</div></div>
           <div class="tweak"><div class="tn">Disable Fast Startup <span class="tag tag-admin">admin</span> <span class="tag tag-boot">reboot</span></div><div class="td">A shutdown becomes a real full shutdown. Fixes a surprising number of odd post-boot bugs.</div></div>
           <div class="tweak"><div class="tn">Disable Hibernation <span class="tag tag-admin">admin</span></div><div class="td">Frees hiberfil.sys — often several GB. Verified against the registry afterwards, not assumed.</div></div>
+          <div class="tweak"><div class="tn">Disable USB Selective Suspend <span class="tag tag-admin">admin</span></div><div class="td">Stops Windows power-suspending idle USB ports. Fixes input lag or brief disconnects on wireless mouse/keyboard receivers.</div></div>
+          <div class="tweak"><div class="tn">Disable PCIe Link Power Management <span class="tag tag-admin">admin</span></div><div class="td">Turns off PCIe ASPM. Reduces micro-stutter from devices waking a low-power link state, at the cost of higher idle draw.</div></div>
+          <div class="tweak"><div class="tn">Minimum Processor State 100% <span class="tag tag-admin">admin</span></div><div class="td">Stops the CPU being down-clocked or parked. Removes ramp-up delay; raises power draw and heat, especially on laptops.</div></div>
         </div>
       </div>
     </div>
@@ -456,7 +476,7 @@
     <div class="wrap">
       <div class="section-head reveal" style="max-width:700px;">
         <div class="eyebrow"><span class="tick"></span><span>Download</span></div>
-        <h2>Free. All 35 tweaks. No catch.</h2>
+        <h2>Free. All 50 tweaks. No catch.</h2>
         <p>The free version is the whole tool — not a trial, not a locked list. Premium is planned as extra tooling on top, and it is not ready yet, so it is not for sale yet.</p>
       </div>
 
@@ -466,14 +486,18 @@
           <h3>Everything, right now</h3>
           <p>One portable executable. Run it, tweak, restore, delete it if you want.</p>
           <ul>
-            <li>All 35 tweaks across 6 categories</li>
+            <li>All 50 tweaks across 6 categories</li>
             <li>Full backup &amp; restore system</li>
             <li>Real DNS benchmarking</li>
             <li>System restore point before bulk changes</li>
             <li>No account, no telemetry, no nagging</li>
           </ul>
-          <a href="https://github.com/matiboz26-cyber/nivoxtweaks/releases/download/v1.0.0/NivoxTweaks-Setup.exe" class="btn btn-primary btn-lg">Download the free version</a>
-          <div class="req">v1.0.0 · Windows 10 20H2+ / Windows 11 · x64 · no .NET install needed</div>
+          <a href="https://github.com/matiboz26-cyber/nivoxtweaks/releases/download/v1.1.0/NivoxTweaks-Setup.exe" class="btn btn-primary btn-lg">Download the free version</a>
+          <div class="req">v1.1.0 · Windows 10 20H2+ / Windows 11 · x64 · no .NET install needed</div>
+          <div class="smartscreen-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span><b>Windows may show a "Windows protected your PC" SmartScreen warning</b> — that's completely normal for a new, not-yet-code-signed app, not a sign anything is wrong. Click <code>More info → Run anyway</code>.</span>
+          </div>
         </div>
 
         <div class="dl soon">
@@ -564,7 +588,7 @@
 
   // --- terminal log, mirrors the app's real output format ---
   var lines = [
-    {c:'dim', t:'NivoxTweaks v1.0.0   [ADMINISTRATOR]'},
+    {c:'dim', t:'NivoxTweaks v1.1.0   [ADMINISTRATOR]'},
     {c:'dim', t:'Windows 11 24H2 (Build 26100.1742) · X64'},
     {c:'',    t:''},
     {c:'hl',  t:'Applying "Games Task Priority (MMCSS)"'},
